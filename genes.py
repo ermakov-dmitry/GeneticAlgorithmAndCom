@@ -189,3 +189,7 @@ class Genes:
 				print(self.newChilds[i][j], end=" ", flush=True)
 				if self.newChilds[i][j] == self.stopCity: break
 			print( )
+
+	def returnBestRoute(self):
+		return [result for result in self.bestRoute if result not in [-1]], self.costOfBestRoute
+
