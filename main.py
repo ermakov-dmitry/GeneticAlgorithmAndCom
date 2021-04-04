@@ -4,6 +4,7 @@
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 import csv
+import re
 
 import createRoute
 
@@ -26,20 +27,19 @@ def create_data_model():
 
 def print_solution(manager, routing, solution):
     """Prints solution on console."""
-    print('Objective: {} miles'.format(solution.ObjectiveValue()))
+    # print('Objective: {} metres'.format(solution.ObjectiveValue()))
     index = routing.Start(0)
     plan_output = 'Route for vehicle:\n'
     route_distance = 0
     while not routing.IsEnd(index):
-        plan_output += ' {} ->'.format(manager.IndexToNode(index))
+        plan_output += '{} -> '.format(manager.IndexToNode(index))
         previous_index = index
         index = solution.Value(routing.NextVar(index))
-        print(previous_index, '->', index)
-        print('Тут должен быть маршрут по большой сетке')
         route_distance += routing.GetArcCostForVehicle(previous_index, index, 0)
-    plan_output += ' {}\n'.format(manager.IndexToNode(index))
+    plan_output += '{}\n'.format(manager.IndexToNode(index))
+    route_idx = re.findall('(\d+)', plan_output)
+    plan_output += 'Route distance: {} metres\n'.format(route_distance)
     print(plan_output)
-    plan_output += 'Route distance: {}miles\n'.format(route_distance)
 
 def main():
     """Entry point of the program."""

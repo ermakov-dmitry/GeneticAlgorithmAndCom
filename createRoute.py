@@ -56,3 +56,5 @@ if points.count(start_point) == 0:
     raise Exception('Not found start point')
 
 filename = 'ourRouteTopology.csv'
+for x in matrix:
+    print(x)
