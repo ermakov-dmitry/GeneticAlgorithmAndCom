@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import math
 import numpy as np
 import random
 
@@ -25,17 +24,17 @@ class Genes:
 		self.parent2 = secondParent
 
 	def makeRoute(self):
-		print(np.matrix(self.GRAPH))
+		# print(np.matrix(self.GRAPH))
 		self.setParents()
 
 		for i in range(self.iteration):
 			nChild = 0
 
-			print( )
-			print('Iteration number:  '+ str(i+1))
-			self.printParents()
-			self.printBestRoute()
-			print( )
+			# print( )
+			# print('Iteration number:  '+ str(i+1))
+			# self.printParents()
+			# self.printBestRoute()
+			# print( )
 
 			for j in range(self.numberOfChilds):
 				self.offSpring[0] = self.startCity
@@ -138,10 +137,10 @@ class Genes:
 							self.costOfBestRoute = cost
 
 
-			print('Iteration finished!')
-			for p in range(40): print('-', end=" ", flush=True)
-			print()
-		self.printBestRoute()
+			#print('Iteration finished!')
+			# for p in range(40): print('-', end=" ", flush=True)
+			# print()
+		# self.printBestRoute()
 
 			
 

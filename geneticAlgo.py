@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import copy
 import csv
-import numpy as np
 
 import randPaths
 import genes
@@ -46,6 +44,4 @@ def findShortestPath(filename, iter, childs, mutation, start, finish):
 	gen.makeRoute()
 
 	firstPath = gen.returnBestRoute()
-	# print()
-	# print('Best route: ' + str(firstPath))
 	return firstPath

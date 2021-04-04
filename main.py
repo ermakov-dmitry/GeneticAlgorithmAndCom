@@ -1,62 +1,86 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import geneticAlgo
+from ortools.constraint_solver import routing_enums_pb2
+from ortools.constraint_solver import pywrapcp
 import csv
 
-iteration = 50
-childs = 100
-mut = 100
-filename = 'smallTopology.csv'
+import createRoute
 
-# small: 0 - 7
-# medium: 0 - 11
 
-number_of_points = input('Please enter number of points of route: ')
-number_of_points = int(number_of_points)
-points = []
-for i in range(number_of_points):
-    points.append(int(input('Enter number of {0} point: '.format(i + 1))))
+def create_data_model():
+    """Stores the data for the problem."""
+    data = {'distance_matrix': []}
+    with open("ourRouteTopology.csv", encoding='utf-8') as r_file:
+        file_reader = csv.reader(r_file, delimiter=",")
+        for row in file_reader:
+            line = []
+            for x in row:
+                line.append(int(x))
+            data['distance_matrix'].append(line)
 
-matrix = []
+    depot = createRoute.idx_start_point_in_matrix
+    data['num_vehicles'] = 1
+    data['depot'] = depot
+    return data
 
-for i in range(number_of_points):
-    matrix.append([None] * number_of_points)
+def print_solution(manager, routing, solution):
+    """Prints solution on console."""
+    print('Objective: {} miles'.format(solution.ObjectiveValue()))
+    index = routing.Start(0)
+    plan_output = 'Route for vehicle:\n'
+    route_distance = 0
+    while not routing.IsEnd(index):
+        plan_output += ' {} ->'.format(manager.IndexToNode(index))
+        previous_index = index
+        index = solution.Value(routing.NextVar(index))
+        print(previous_index, '->', index)
+        print('Тут должен быть маршрут по большой сетке')
+        route_distance += routing.GetArcCostForVehicle(previous_index, index, 0)
+    plan_output += ' {}\n'.format(manager.IndexToNode(index))
+    print(plan_output)
+    plan_output += 'Route distance: {}miles\n'.format(route_distance)
 
-for i in range(number_of_points):
-    for j in range(i, number_of_points):
-        if i == j:
-            matrix[i][j] = [0], 0
-        else:
-            matrix[i][j] = geneticAlgo.findShortestPath(filename, iteration, childs, mut, points[i], points[j])
-            matrix[j][i] = geneticAlgo.findShortestPath(filename, iteration, childs, mut, points[j], points[i])
+def main():
+    """Entry point of the program."""
+    # Instantiate the data problem.
+    data = create_data_model()
 
-with open("ourRouteTopology.csv", mode="w", encoding='utf-8') as w_file:
-    file_writer = csv.writer(w_file, delimiter=",", lineterminator="\r")
-    for i in range(len(matrix[0])):
-        row_csv = []
-        for j in range(len(matrix[0])):
-            row_csv.append(matrix[i][j][1])
-        file_writer.writerow(row_csv)
+    # Create the routing index manager.
+    manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),
+                                           data['num_vehicles'], data['depot'])
 
-print('Change start point from route point -', end='')
-for x in points:
-    print(' ', end='')
-    print(x, end='')
-print(':', end=' ')
-start_point = input()
-start_point = int(start_point)
-idx_start_point_in_matrix = 0
-for i in range(number_of_points):
-    if points[i] == start_point:
-        idx_start_point_in_matrix = i
-        break
-if points.count(start_point) == 0:
-    raise Exception('Not found start point')
+    # Create Routing Model.
+    routing = pywrapcp.RoutingModel(manager)
 
-filename = 'ourRouteTopology.csv'
-print(idx_start_point_in_matrix)
 
-for i in range(number_of_points):
-    print(matrix[i])
+    def distance_callback(from_index, to_index):
+        """Returns the distance between the two nodes."""
+        # Convert from routing variable Index to distance matrix NodeIndex.
+        from_node = manager.IndexToNode(from_index)
+        to_node = manager.IndexToNode(to_index)
+        return data['distance_matrix'][from_node][to_node]
+
+    transit_callback_index = routing.RegisterTransitCallback(distance_callback)
+
+    # Define cost of each arc.
+    routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
+
+    # Setting first solution heuristic.
+    search_parameters = pywrapcp.DefaultRoutingSearchParameters()
+    search_parameters.first_solution_strategy = (
+        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
+
+    # Solve the problem.
+    solution = routing.SolveWithParameters(search_parameters)
+
+    # Print solution on console.
+    if solution:
+        print_solution(manager, routing, solution)
+
+
+
+
+if __name__ == '__main__':
+    main()
 
