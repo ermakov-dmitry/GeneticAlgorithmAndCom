@@ -12,12 +12,13 @@ import createRoute
 def create_data_model():
     """Stores the data for the problem."""
     data = {'distance_matrix': []}
-    with open("ourRouteTopology.csv", encoding='utf-8') as r_file:
+    filename = 'ourRouteTopology.csv'
+    with open(filename, encoding='utf-8') as r_file:
         file_reader = csv.reader(r_file, delimiter=",")
         for row in file_reader:
             line = []
-            for x in row:
-                line.append(int(x))
+            for y in row:
+                line.append(int(y))
             data['distance_matrix'].append(line)
 
     depot = createRoute.idx_start_point_in_matrix
@@ -25,11 +26,12 @@ def create_data_model():
     data['depot'] = depot
     return data
 
+
 def print_solution(manager, routing, solution):
     """Prints solution on console."""
     # print('Objective: {} metres'.format(solution.ObjectiveValue()))
     index = routing.Start(0)
-    plan_output = 'Route for vehicle:\n'
+    plan_output = ' Route for vehicle on point map:\n'
     route_distance = 0
     while not routing.IsEnd(index):
         plan_output += '{} -> '.format(manager.IndexToNode(index))
@@ -38,8 +40,26 @@ def print_solution(manager, routing, solution):
         route_distance += routing.GetArcCostForVehicle(previous_index, index, 0)
     plan_output += '{}\n'.format(manager.IndexToNode(index))
     route_idx = re.findall('(\d+)', plan_output)
-    plan_output += 'Route distance: {} metres\n'.format(route_distance)
+    plan_output += '\n Route distance:\n{} metres'.format(route_distance)
     print(plan_output)
+    print('\n', 'Route for vehicle on global map:')
+
+    end_value = -1
+    for i in range(len(route_idx) - 1):
+        # print(' i = {}:'.format(i), end=' ')
+        idx = int(route_idx[i])
+        next_idx = int(route_idx[i + 1])
+        # print(idx, '->', next_idx)
+        current_route = createRoute.matrix[idx][next_idx][0]
+        # print(current_route)
+        for j in range(len(current_route)):
+            if current_route[j] != end_value:
+                end_value = current_route[j]
+                print(current_route[j], end=' ')
+                if j != len(current_route) - 1 or i != len(route_idx) - 2:
+                    print('->', end=' ')
+    print()
+
 
 def main():
     """Entry point of the program."""
@@ -52,7 +72,6 @@ def main():
 
     # Create Routing Model.
     routing = pywrapcp.RoutingModel(manager)
-
 
     def distance_callback(from_index, to_index):
         """Returns the distance between the two nodes."""
@@ -79,8 +98,5 @@ def main():
         print_solution(manager, routing, solution)
 
 
-
-
 if __name__ == '__main__':
     main()
-
