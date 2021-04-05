@@ -43,15 +43,11 @@ def print_solution(manager, routing, solution):
     plan_output += '\n Route distance:\n{} metres'.format(route_distance)
     print(plan_output)
     print('\n', 'Route for vehicle on global map:')
-
     end_value = -1
     for i in range(len(route_idx) - 1):
-        # print(' i = {}:'.format(i), end=' ')
         idx = int(route_idx[i])
         next_idx = int(route_idx[i + 1])
-        # print(idx, '->', next_idx)
         current_route = createRoute.matrix[idx][next_idx][0]
-        # print(current_route)
         for j in range(len(current_route)):
             if current_route[j] != end_value:
                 end_value = current_route[j]

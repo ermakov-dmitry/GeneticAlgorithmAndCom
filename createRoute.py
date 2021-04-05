@@ -4,10 +4,10 @@
 import geneticAlgo
 import csv
 
-iteration = 50
+iteration = 60
 childs = 100
 mut = 100
-filename = 'smallTopology.csv'
+filename = 'mediumTopology.csv'
 
 # small: 0 - 7
 # medium: 0 - 11
