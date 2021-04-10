@@ -7,6 +7,7 @@ import csv
 import re
 
 import createRoute
+import ploting
 
 
 def create_data_model():
@@ -44,6 +45,7 @@ def print_solution(manager, routing, solution):
     print(plan_output)
     print('\n', 'Route for vehicle on global map:')
     end_value = -1
+    plot_route = []
     for i in range(len(route_idx) - 1):
         idx = int(route_idx[i])
         next_idx = int(route_idx[i + 1])
@@ -51,11 +53,13 @@ def print_solution(manager, routing, solution):
         for j in range(len(current_route)):
             if current_route[j] != end_value:
                 end_value = current_route[j]
+                plot_route.append(current_route[j])
                 print(current_route[j], end=' ')
                 if j != len(current_route) - 1 or i != len(route_idx) - 2:
                     print('->', end=' ')
     print()
-
+    print(plot_route)
+    ploting.plot_solution(plot_route)
 
 def main():
     """Entry point of the program."""

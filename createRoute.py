@@ -4,9 +4,9 @@
 import geneticAlgo
 import csv
 
-iteration = 60
-childs = 100
-mut = 100
+iteration = 200
+childs = 50
+mut = 70
 filename = 'mediumTopology.csv'
 
 # small: 0 - 7
@@ -29,7 +29,9 @@ for i in range(number_of_points):
             matrix[i][j] = [0], 0
         else:
             matrix[i][j] = geneticAlgo.findShortestPath(filename, iteration, childs, mut, points[i], points[j])
-            matrix[j][i] = geneticAlgo.findShortestPath(filename, iteration, childs, mut, points[j], points[i])
+            reverse_path = matrix[i][j][0].copy()
+            reverse_path.reverse()
+            matrix[j][i] = reverse_path, matrix[i][j][1]
 
 with open("ourRouteTopology.csv", mode="w", encoding='utf-8') as w_file:
     file_writer = csv.writer(w_file, delimiter=",", lineterminator="\r")
@@ -39,13 +41,14 @@ with open("ourRouteTopology.csv", mode="w", encoding='utf-8') as w_file:
             row_csv.append(matrix[i][j][1])
         file_writer.writerow(row_csv)
 
-print('Choose start point from route point -', end='')
-for x in points:
-    print(' ', end='')
-    print(x, end='')
-print(':', end=' ')
-start_point = input()
-start_point = int(start_point)
+# print('Choose start point from route point -', end='')
+# for x in points:
+#     print(' ', end='')
+#     print(x, end='')
+# print(':', end=' ')
+# start_point = input()
+# start_point = int(start_point)
+start_point = points[0]
 idx_start_point_in_matrix = 0
 for i in range(number_of_points):
     if points[i] == start_point:
