@@ -58,7 +58,7 @@ def print_solution(manager, routing, solution):
                 if j != len(current_route) - 1 or i != len(route_idx) - 2:
                     print('->', end=' ')
     print()
-    print(plot_route)
+    # print(plot_route)
     ploting.plot_solution(plot_route)
 
 def main():
