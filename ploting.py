@@ -3,56 +3,70 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+import tikzplotlib
+
+
+def draw_rectangle(x, y, length, width):
+    plt.plot([x, x], [y, y + width], linewidth=1, color='k')
+    plt.plot([x, x + length], [y + width, y + width], linewidth=1, color='k')
+    plt.plot([x + length, x + length], [y + width, y], linewidth=1, color='k')
+    plt.plot([x + length, x], [y, y], linewidth=1, color='k')
+
+
+def draw_small_rectangle(x, y, length, width):
+    plt.plot([x, x], [y, y + width], linewidth=1, color='k')
+    plt.plot([x + length, x + length], [y + width, y], linewidth=1, color='k')
+    plt.plot([x + length, x], [y, y], linewidth=1, color='k')
 
 
 def plot_rectangles():
     # first rectangle
-    plt.gca().add_patch(Rectangle((1, 6), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((5, 5), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(1, 6, 5, 3)
+    draw_small_rectangle(5, 5, 1, 1)
     plt.text(3.25, 7, '1', fontsize=12)
 
     # second rectangle
-    plt.gca().add_patch(Rectangle((1, 12), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((5, 11), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(1, 12, 5, 3)
+    draw_small_rectangle(5, 11, 1, 1)
     plt.text(3.25, 13, '2', fontsize=12)
 
     # third rectangle
-    plt.gca().add_patch(Rectangle((1, 18), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((5, 17), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(1, 18, 5, 3)
+    draw_small_rectangle(5, 17, 1, 1)
     plt.text(3.25, 19, '3', fontsize=12)
 
     # 4th rectangle
-    plt.gca().add_patch(Rectangle((9, 6), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((13, 5), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(9, 6, 5, 3)
+    draw_small_rectangle(13, 5, 1, 1)
     plt.text(11.25, 7, '4', fontsize=12)
 
     # 5th rectangle
-    plt.gca().add_patch(Rectangle((9, 12), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((13, 11), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(9, 12, 5, 3)
+    draw_small_rectangle(13, 11, 1, 1)
     plt.text(11.25, 13, '5', fontsize=12)
 
     # 6th rectangle
-    plt.gca().add_patch(Rectangle((9, 18), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((13, 17), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(9, 18, 5, 3)
+    draw_small_rectangle(13, 17, 1, 1)
     plt.text(11.25, 19, '6', fontsize=12)
 
     # 7th rectangle
-    plt.gca().add_patch(Rectangle((17, 6), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((17, 5), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(17, 6, 5, 3)
+    draw_small_rectangle(17, 5, 1, 1)
     plt.text(19.25, 7, '7', fontsize=12)
 
     # 8th rectangle
-    plt.gca().add_patch(Rectangle((17, 12), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((17, 11), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(17, 12, 5, 3)
+    draw_small_rectangle(17, 11, 1, 1)
     plt.text(19.25, 13, '8', fontsize=12)
 
     # 9th rectangle
-    plt.gca().add_patch(Rectangle((17, 18), 5, 3, linewidth=1, edgecolor='k', facecolor='none'))
-    plt.gca().add_patch(Rectangle((17, 17), 1, 1, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(17, 18, 5, 3)
+    draw_small_rectangle(17, 17, 1, 1)
     plt.text(19.25, 19, '9', fontsize=12)
 
     # zero rectangle
-    plt.gca().add_patch(Rectangle((9, 0), 5, 2, linewidth=1, edgecolor='k', facecolor='none'))
+    draw_rectangle(9, 0, 5, 2)
     plt.text(11.25, 0.35, '0', fontsize=12)
 
 
@@ -86,13 +100,14 @@ def plot_solution(route):
         y_route.append(coordinats[idx][1])
     plt.plot(x_route, y_route, '--')
     for i in range(10):
-        plt.plot(coordinats[i][0], coordinats[i][1], 'ok')
+        plt.plot(coordinats[i][0], coordinats[i][1], marker='.', color='k', markersize=2)
     for i in range(10, len(coordinats)):
-        plt.plot(coordinats[i][0], coordinats[i][1], '.', color='k')
+        plt.plot(coordinats[i][0], coordinats[i][1], marker='.', color='k', markersize=1)
     plt.xlabel('$x$, m')
     plt.ylabel('$y$, m')
     plt.xlim([0, 25])
     plt.ylim([0, 25])
 
     plot_rectangles()
+    tikzplotlib.save('test.tex')
     plt.show()
